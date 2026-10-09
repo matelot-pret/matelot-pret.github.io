@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Patrick Samou</title>
+<meta name="description" content="Projets de Patrick Samou, de l'analyse au code : Java, Spring Boot, C#, SQL, Docker.">
+<!-- Aperçu affiché quand le lien est partagé (WhatsApp, LinkedIn, e-mail…) -->
+<meta property="og:title" content="Patrick Samou · Projets">
+<meta property="og:description" content="Mes projets, de l'analyse au code. Disponible pour un stage de 15 à 18 semaines entre février et juin 2027.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Schibsted+Grotesk:wght@600;700;800&display=swap">
+<style>
+/* Mise en page : deux colonnes sur grand écran (nom et disponibilité fixes à gauche, projets à droite),
+   une seule colonne sur téléphone, car la plupart des visiteurs arrivent en scannant le QR code. */
+:root {
+  --bg: #F3F5F6;
+  --surface: #FFFFFF;
+  --fg: #172027;
+  --muted: #56626C;
+  --line: #D6DCE0;
+  --accent: #0B5E7E;
+  --accent-soft: #DFEDF2;
+  --ok: #1D7A4B;
+  --wip: #A65F0E;
+  --font-display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", Roboto, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101518; --surface: #172025; --fg: #E3E8EB; --muted: #98A4AD; --line: #283339;
+    --accent: #72C3DE; --accent-soft: #15313B; --ok: #52C48D; --wip: #E9A452;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101518; --surface: #172025; --fg: #E3E8EB; --muted: #98A4AD; --line: #283339;
+  --accent: #72C3DE; --accent-soft: #15313B; --ok: #52C48D; --wip: #E9A452;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-underline-offset: 0.2em; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+h1, h2, h3, h4 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+ul { margin: 0; padding: 0; }
+img { max-width: 100%; height: auto; display: block; }
+
+.skip { position: absolute; left: -9999px; }
+.skip:focus { left: 1rem; top: 1rem; background: var(--surface); padding: 0.5rem 1rem; z-index: 10; }
+
+.page {
+  max-width: 76rem;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 5vw, 3.5rem);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 3rem;
+}
+
+/* ---------- Colonne de gauche : nom, disponibilité, liens ---------- */
+.intro {
+  padding-block: 3.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+h1 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.6rem, 8vw, 3.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+
+/* Bloc « état du service » : clin d'œil aux pages de statut des équipes d'exploitation */
+.status {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.15rem 0.75rem;
+  align-items: center;
+  max-width: 25rem;
+  margin-top: 1.5rem;
+  padding: 0.9rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+.status__dot {
+  width: 0.6rem; height: 0.6rem; border-radius: 50%;
+  background: var(--ok);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 55%, transparent);
+  animation: pulse 2.4s ease-out infinite;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 55%, transparent); }
+  70%, 100% { box-shadow: 0 0 0 0.55rem color-mix(in srgb, var(--ok) 0%, transparent); }
+}
+@media (prefers-reduced-motion: reduce) { .status__dot { animation: none; } }
+.status__label { font-weight: 500; color: var(--ok); }
+.status__detail { grid-column: 2; color: var(--muted); }
+.status__detail--strong { color: var(--fg); }
+
+.links {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+.links a { color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--line); padding-bottom: 0.1rem; }
+.links a:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ---------- Contenu ---------- */
+main { padding-block: 0 4rem; min-width: 0; }
+section { padding-block: 1rem 3.5rem; scroll-margin-top: 1.5rem; }
+h2 {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+h2::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+/* Projets principaux */
+.projects { list-style: none; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; }
+.projects > li { min-width: 0; }
+.project {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.9rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--line);
+  min-width: 0;
+}
+.projects > li:first-child .project { padding-top: 0; }
+.project__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.chip {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.12rem 0.5rem;
+  border-radius: 3px;
+  border: 1px solid currentColor;
+  white-space: nowrap;
+}
+.chip--done { color: var(--ok); }
+.chip--wip { color: var(--wip); }
+.chip--design { color: var(--muted); border-style: dashed; }
+.project h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.45rem;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+.project__pitch { max-width: 40rem; }
+
+/* Ligne « Analyse » : les livrables d'analyse de chaque projet */
+.analysis {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.7rem 0.85rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  max-width: 40rem;
+}
+.analysis__label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-right: 0.35rem;
+}
+.analysis span:not(.analysis__label) {
+  font-size: 0.85rem;
+  padding: 0.1rem 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+.project__points { list-style: none; display: grid; gap: 0.45rem; max-width: 40rem; color: var(--muted); font-size: 0.95rem; }
+.project__points li { padding-left: 1.1rem; position: relative; }
+.project__points li::before {
+  content: "";
+  position: absolute; left: 0; top: 0.72em;
+  width: 0.45rem; height: 1px; background: var(--accent);
+}
+.project__points code { font-family: var(--font-mono); font-size: 0.85em; color: var(--fg); overflow-wrap: anywhere; }
+.tags { list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.tags li {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.project__links { display: flex; gap: 1.25rem; font-family: var(--font-mono); font-size: 0.85rem; }
+
+/* Diagrammes et maquettes : vignettes cliquables, fond blanc pour rester lisibles en mode sombre */
+.figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.75rem;
+  max-width: 40rem;
+}
+.figures--single { grid-template-columns: minmax(0, 1fr); max-width: 22rem; }
+.figures figure { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.4rem; min-width: 0; }
+.figures a {
+  display: block;
+  background: #FFFFFF;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.5rem;
+  aspect-ratio: 4 / 3;
+  max-width: 100%;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+.figures a:hover { border-color: var(--accent); }
+.figures img { width: 100%; height: 100%; object-fit: contain; }
+.figures figcaption { font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); line-height: 1.45; }
+@media (prefers-reduced-motion: reduce) { .figures a { transition: none; } }
+
+/* Autres projets, en version compacte */
+.more-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin: 2.5rem 0 1rem;
+}
+.compact { list-style: none; display: grid; grid-template-columns: minmax(0, 1fr); border-top: 1px solid var(--line); }
+.compact li {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line);
+  min-width: 0;
+}
+.compact h4 { font-size: 1.05rem; font-weight: 600; }
+.compact p:not(.project__meta):not(.project__links) { color: var(--muted); font-size: 0.95rem; max-width: 40rem; }
+
+/* Contact */
+.contact { display: grid; gap: 1.25rem; max-width: 38rem; }
+.contact__lead {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+.mail { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+.mail__address {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  padding: 0.55rem 0.9rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--fg);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.btn {
+  font: inherit;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+}
+.btn:hover { background: var(--accent-soft); }
+
+footer {
+  padding-block: 2rem 3rem;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* ---------- Grand écran ---------- */
+@media (min-width: 64rem) {
+  .page { grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr); gap: 5rem; }
+  .intro {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    align-self: start;
+    min-height: 100dvh;
+    padding-block: 6rem 4rem;
+    justify-content: space-between;
+  }
+  main { padding-block: 6rem 2rem; }
+  .project { padding: 1.5rem; margin-inline: -1.5rem; border-bottom: 0; border-radius: 8px; transition: background-color 0.2s ease; }
+  .projects > li:first-child .project { padding-top: 1.5rem; margin-top: -1.5rem; }
+  .project:hover { background: var(--surface); }
+  @media (prefers-reduced-motion: reduce) { .project { transition: none; } }
+  footer { grid-column: 2; border-top: 0; padding-top: 0; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#contenu">Aller aux projets</a>
+
+<div class="page">
+
+  <header class="intro">
+    <div>
+      <h1>Patrick Samou</h1>
+
+      <div class="status">
+        <span class="status__dot" aria-hidden="true"></span>
+        <span class="status__label">Disponible pour un stage</span>
+        <span class="status__detail status__detail--strong">15 à 18 semaines, entre février et juin 2027</span>
+        <span class="status__detail">Ouvert aussi aux propositions de job étudiant</span>
+      </div>
+    </div>
+
+    <ul class="links" aria-label="Me contacter et voir mon code">
+      <li><a href="mailto:samoujune@gmail.com">E-mail</a></li>
+      <li><a href="https://github.com/matelot-pret" target="_blank" rel="noopener">GitHub</a></li>
+    </ul>
+  </header>
+
+  <main id="contenu">
+
+    <section id="projets" aria-labelledby="t-projets">
+      <h2 id="t-projets">Projets</h2>
+
+      <ul class="projects">
+        <li>
+          <article class="project">
+            <p class="project__meta"><span>Projet intégré · cadre scolaire · Bloc 2 · équipe de 7 · mars → juin 2026</span><span class="chip chip--done">Terminé</span></p>
+            <h3>Comprendre et Parler</h3>
+            <p class="project__pitch">Projet scolaire réalisé pour l'ASBL Comprendre et Parler, dans le cadre du projet intégré de Bloc 2 à la HERS. L'ASBL affecte 25 interprètes à 50 bénéficiaires. La responsable gérait tout avec des fichiers Excel et Word, des post-it et des notes manuscrites : les informations étaient dispersées, le risque d'erreur dans les affectations était élevé et toute la charge reposait sur elle. L'application centralise les profils, les missions et les horaires, et fonctionne aussi sur téléphone.</p>
+
+            <p class="analysis"><span class="analysis__label">Analyse</span><span>Cas d'utilisation</span><span>Diagramme entité-association</span><span>Modèle relationnel</span><span>Diagramme de classes</span></p>
+
+            <ul class="project__points">
+              <li>J'ai développé l'horaire de base : missions récurrentes, détection des chevauchements et des doubles réservations d'un interprète ou d'un bénéficiaire.</li>
+              <li>J'ai écrit les DAO des missions et des utilisateurs en JDBC, avec des requêtes SQL écrites à la main.</li>
+              <li>J'ai adapté le calcul des heures prestées, une fonction PL/SQL, aux missions récurrentes.</li>
+              <li>J'ai accéléré le chargement de l'horaire grâce à des requêtes allégées.</li>
+            </ul>
+            <ul class="tags" aria-label="Technologies">
+              <li>Java 21</li><li>Spring Boot</li><li>Thymeleaf</li><li>JDBC</li><li>Oracle</li><li>PL/SQL</li><li>JUnit</li><li>GitLab</li>
+            </ul>
+            <p class="project__links"><a href="https://github.com/matelot-pret/horaire-comprendre-et-parler" target="_blank" rel="noopener">Voir le code →</a></p>
+          </article>
+        </li>
+
+        <li>
+          <article class="project">
+            <p class="project__meta"><span>Projet individuel · cours de Java · Bloc 2 · mai 2026</span><span class="chip chip--done">Terminé</span></p>
+            <h3>TaskManager</h3>
+            <p class="project__pitch">Une application de gestion de tâches collaborative : plusieurs personnes l'utilisent en même temps, et chaque création, modification ou clôture de tâche apparaît immédiatement chez les autres. Réalisée pour le cours de Java consacré aux WebSockets, aux streams et à JavaFX.</p>
+            <ul class="project__points">
+              <li>Un client JavaFX et un serveur Spring Boot échangent des messages JSON par WebSocket. Le serveur diffuse chaque changement à tous les autres clients connectés.</li>
+              <li>Les sessions sont gardées dans une <code>ConcurrentHashMap</code>, et chaque envoi est synchronisé sur sa session, qui n'accepte pas deux écritures simultanées.</li>
+              <li>Les tâches sont chargées en une seule requête avec jointures, au lieu d'une requête par tâche (problème du N+1).</li>
+              <li>Les transactions sont gérées dans la couche service, pas dans les DAO.</li>
+            </ul>
+            <ul class="tags" aria-label="Technologies">
+              <li>Java</li><li>JavaFX</li><li>Spring Boot</li><li>WebSocket</li><li>JDBC</li><li>Oracle</li>
+            </ul>
+            <p class="project__links"><a href="https://github.com/matelot-pret/TaskManager" target="_blank" rel="noopener">Voir le code →</a></p>
+          </article>
+        </li>
+
+        <li>
+          <article class="project">
+            <p class="project__meta"><span>Projet individuel · C# · Bloc 2 · été 2026</span><span class="chip chip--done">Terminé</span></p>
+            <h3>Surveillance de machines réseau</h3>
+            <p class="project__pitch">Une solution Windows qui surveille jusqu'à huit machines d'un réseau local par ping, et prévient l'équipe de maintenance par e-mail dès qu'une machine tombe ou redevient joignable. Elle regroupe une application de configuration, une application de surveillance et un projet de tests.</p>
+
+            <p class="analysis"><span class="analysis__label">Analyse</span><span>2 diagrammes de classes</span><span>Diagramme d'états</span></p>
+
+            <div class="figures">
+              <figure>
+                <a href="images/monitoring-classes.jpg" target="_blank" rel="noopener"><img src="images/monitoring-classes.jpg" alt="Diagramme de classes de l'application de surveillance : Config, MachineConfig, PingService, Notifier, MainAppManager et les écrans" loading="lazy"></a>
+                <figcaption>Diagramme de classes de l'application de surveillance</figcaption>
+              </figure>
+              <figure>
+                <a href="images/monitoring-etats.jpg" target="_blank" rel="noopener"><img src="images/monitoring-etats.jpg" alt="Diagramme d'états : non initiée, puis fonctionnelle ou non fonctionnelle selon le premier ping ; un e-mail part à chaque passage entre fonctionnelle et non fonctionnelle" loading="lazy"></a>
+                <figcaption>Diagramme d'états de la communication avec une machine</figcaption>
+              </figure>
+            </div>
+
+            <ul class="project__points">
+              <li>Le diagramme d'états fixe la règle d'alerte : un e-mail part uniquement quand une machine passe de fonctionnelle à non fonctionnelle, ou l'inverse. Le premier ping ne déclenche rien.</li>
+              <li>Chaque machine est interrogée à son propre rythme, sur son propre thread. Le service de ping intercepte toutes les erreurs pour que la surveillance ne s'arrête jamais.</li>
+              <li>Validation stricte des adresses IPv4 : <code>IPAddress.TryParse</code> accepte des formes abrégées comme « 127.1 », donc l'adresse doit se relire à l'identique pour être acceptée.</li>
+              <li>Contraintes imposées : aucune dépendance externe, fichiers de moins de 200 lignes, méthodes de moins de 80 lignes, un commit par classe, tests MSTest.</li>
+            </ul>
+            <ul class="tags" aria-label="Technologies">
+              <li>C#</li><li>.NET</li><li>WinForms</li><li>MSTest</li><li>Git</li><li>UML</li>
+            </ul>
+            <p class="project__links"><a href="https://github.com/matelot-pret/machine-monitoring" target="_blank" rel="noopener">Voir le code →</a></p>
+          </article>
+        </li>
+
+        <li>
+          <article class="project">
+            <p class="project__meta"><span>Projet individuel · C# · Bloc 2 · 2026</span><span class="chip chip--done">Terminé</span></p>
+            <h3>Clean &amp; Save</h3>
+            <p class="project__pitch">Une application Windows qui, au lancement, sauvegarde un dossier de façon incrémentale et lance en même temps le nettoyage de disque de Windows, puis envoie un rapport par e-mail. Une seconde application sert à la configurer (dossier source, exclusions, adresse de notification) et à restaurer une sauvegarde.</p>
+
+            <p class="analysis"><span class="analysis__label">Analyse</span><span>Maquettes à main levée</span></p>
+
+            <div class="figures figures--single">
+              <figure>
+                <a href="images/cleansave-maquette.jpg" target="_blank" rel="noopener"><img src="images/cleansave-maquette.jpg" alt="Maquette dessinée à main levée de l'écran de restauration : menu Sauvegarde, Notification, Restauration, choix de la sauvegarde et du dossier cible, boutons Restaurer, Enregistrer et RAZ" loading="lazy"></a>
+                <figcaption>Maquette à main levée de l'écran de restauration</figcaption>
+              </figure>
+            </div>
+
+            <ul class="project__points">
+              <li>Sauvegarde incrémentale avec robocopy, outil natif de Windows, avec exclusion de fichiers et de dossiers.</li>
+              <li>La sauvegarde et le nettoyage tournent en parallèle avec <code>Task.WhenAll</code>. Chaque tâche signale son état par son propre <code>IProgress</code>, affiché en temps réel par des GIF animés.</li>
+              <li>Annulation à tout moment, et délai maximal configurable au-delà duquel une tâche est arrêtée et signalée.</li>
+              <li>Mot de passe SMTP chiffré avec DPAPI, pour qu'il n'apparaisse jamais en clair.</li>
+            </ul>
+            <ul class="tags" aria-label="Technologies">
+              <li>C#</li><li>.NET</li><li>WinForms</li><li>async/await</li><li>robocopy</li><li>MSTest</li>
+            </ul>
+            <p class="project__links"><a href="https://github.com/matelot-pret/backup_solution" target="_blank" rel="noopener">Voir le code →</a></p>
+          </article>
+        </li>
+
+        <li>
+          <article class="project">
+            <p class="project__meta"><span>Cours de réseau · labo à 3 · Bloc 2</span><span class="chip chip--done">Terminé</span></p>
+            <h3>Pocker</h3>
+            <p class="project__pitch">Le labo du cours de réseau demandait de monter une infrastructure Docker avec un cache, un reverse proxy, un load balancer et un scanner de vulnérabilités. Pour voir l'effet du cache en temps réel, nous avons créé un Pokédex de 1&nbsp;025 Pokémon : un bandeau affiche le temps d'accès aux données, selon que la requête passe par le serveur avec cache Redis ou par celui sans cache.</p>
+            <ul class="project__points">
+              <li>Nginx en reverse proxy avec bascule automatique : le serveur sans cache répond en priorité, et celui avec Redis prend le relais s'il tombe.</li>
+              <li>Le même code PHP orienté objet tourne sur les deux serveurs : seul le cache injecté change (<code>NullCache</code> ou <code>RedisCache</code>).</li>
+              <li>Pages de démonstration du cache et de son invalidation, avec une latence simulée de 200 ms par requête pour rendre l'écart visible.</li>
+              <li>Scan des images avec Trivy, et analyse des risques du scanner lui-même (accès au socket Docker). Requêtes préparées, jeton CSRF, mots de passe dans un <code>.env</code> non versionné.</li>
+            </ul>
+            <ul class="tags" aria-label="Technologies">
+              <li>Docker</li><li>Nginx</li><li>Redis</li><li>Trivy</li><li>PHP</li><li>PostgreSQL</li>
+            </ul>
+            <p class="project__links"><a href="https://github.com/matelot-pret/projet-Devops-Bloc2" target="_blank" rel="noopener">Voir le code →</a></p>
+          </article>
+        </li>
+      </ul>
+
+      <h3 class="more-title">Autres projets</h3>
+      <ul class="compact">
+        <li>
+          <p class="project__meta"><span>Projet personnel</span><span class="chip chip--wip">En développement</span></p>
+          <h4>Brio</h4>
+          <p>Une application web pour organiser ses révisions comme un jeu de rôle : chaque matière devient un boss, chaque tâche de 25 à 35 minutes rapporte de l'expérience. L'analyse est terminée (règles métier, diagramme de classes, modèle relationnel) et le développement est en cours. Java, Spring Boot, PostgreSQL.</p>
+          <p class="project__links"><a href="https://github.com/matelot-pret/gamification-exam" target="_blank" rel="noopener">Voir le code →</a></p>
+        </li>
+        <li>
+          <p class="project__meta"><span>Projet personnel</span><span class="chip chip--design">Analyse</span></p>
+          <h4>Planning du personnel pour un restaurant</h4>
+          <p>Analyse d'une application de planning pour le restaurant où je travaille : horaires, congés, pauses et quotas d'heures. J'ai recueilli les règles métier directement auprès de mon employeur : postes, zones de salle, besoins en personnel par jour. L'analyse est faite, le développement n'a pas commencé.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section id="contact" aria-labelledby="t-contact">
+      <h2 id="t-contact">Contact</h2>
+      <div class="contact">
+        <p class="contact__lead">Vous cherchez un stagiaire de février à juin 2027&nbsp;?</p>
+        <p>Écrivez-moi, je vous envoie mon CV complet et je suis disponible pour un entretien, en présentiel ou en visio.</p>
+        <div class="mail">
+          <a class="mail__address" id="email-text" href="mailto:samoujune@gmail.com">samoujune@gmail.com</a>
+          <button class="btn" type="button" id="copy-email" data-copy="samoujune@gmail.com">Copier l'adresse</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Site statique hébergé sur GitHub Pages · mis à jour en octobre 2026
+  </footer>
+</div>
+
+<script>
+// Bouton « Copier l'adresse » : copie l'e-mail, ou le sélectionne si le navigateur refuse la copie.
+(function () {
+  var btn = document.getElementById('copy-email');
+  if (!btn) return;
+  var label = btn.textContent;
+  btn.addEventListener('click', function () {
+    var text = btn.getAttribute('data-copy');
+    var done = function (msg) {
+      btn.textContent = msg;
+      setTimeout(function () { btn.textContent = label; }, 2500);
+    };
+    var selectIt = function () {
+      var el = document.getElementById('email-text');
+      var range = document.createRange();
+      range.selectNodeContents(el);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      done('Sélectionnée : Ctrl+C');
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done('Adresse copiée'); }, selectIt);
+    } else {
+      selectIt();
+    }
+  });
+})();
+</script>
+</body>
+</html>
